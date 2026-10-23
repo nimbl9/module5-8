@@ -1,0 +1,66 @@
+@page "{id:int}"
+@model CourseDetailsModel
+@{
+    ViewData["Title"] = Model.Course?.Name ?? "Сведения о курсе";
+}
+
+<div class="container mt-4">
+    <div class="mb-3">
+        <a asp-page="/Index" class="btn btn-outline-secondary btn-sm">&larr; Вернуться к списку курсов</a>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorAlert))
+    {
+        <div class="alert alert-danger shadow-sm">
+            <h5>Ошибка загрузки данных</h5>
+            <p class="mb-0">@Model.ErrorAlert</p>
+        </div>
+    }
+
+    @if (Model.Course != null)
+    {
+        <div class="card shadow-sm border-0 border-top border-4 border-success">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="badge bg-success me-2">API v2.0 Contract</span>
+                    <span class="badge bg-primary">Курс #@Model.Course.Id</span>
+                </div>
+                <span class="badge bg-info text-dark fs-6">@Model.Course.Credits кредитов (ECTS)</span>
+            </div>
+            <div class="card-body">
+                <h2 class="card-title text-dark mb-3">@Model.Course.Name</h2>
+                <p class="lead text-secondary">@Model.Course.Description</p>
+                
+                <hr />
+
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded border">
+                            <h6 class="text-uppercase text-muted small fw-bold">Сведения о преподавателе</h6>
+                            <p class="mb-1"><strong>Ф.И.О.:</strong> @Model.Course.TeacherFullName</p>
+                            <p class="mb-1"><strong>Email:</strong> <a href="mailto:@Model.Course.TeacherEmail">@Model.Course.TeacherEmail</a></p>
+                            <p class="mb-0"><strong>Кафедра/Департамент:</strong> @Model.Course.TeacherDepartment</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded border">
+                            <h6 class="text-uppercase text-muted small fw-bold">Академические метрики курса (v2)</h6>
+                            <p class="mb-1"><strong>Записано студентов:</strong> <span class="badge bg-secondary fs-6">@Model.Course.EnrolledStudentsCount чел.</span></p>
+                            <p class="mb-1"><strong>Средняя оценка:</strong> 
+                                @if (Model.Course.AverageGrade.HasValue && Model.Course.AverageGrade.Value > 0)
+                                {
+                                    <span class="badge bg-warning text-dark fs-6">@Model.Course.AverageGrade.Value.ToString("F1") / 100</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">нет выставленных оценок</span>
+                                }
+                            </p>
+                            <p class="mb-0"><strong>Дата добавления:</strong> @Model.Course.CreatedAt.ToString("dd.MM.yyyy HH:mm") UTC</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,54 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Каталог курсов университета";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2 text-primary">University Course Management Client</h1>
+            <p class="text-muted mb-0">Клиентское веб-приложение на Razor Pages, взаимодействующее с REST Web API через IHttpClientFactory</p>
+        </div>
+        <span class="badge bg-success p-2">HTTP Client Connected</span>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorAlert))
+    {
+        <div class="alert alert-danger shadow-sm" role="alert">
+            <h5 class="alert-heading">Внимание: ошибка обращения к API</h5>
+            <p class="mb-0">@Model.ErrorAlert</p>
+        </div>
+    }
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var course in Model.Courses)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0 border-top border-4 border-primary">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge bg-light text-dark border">Курс #@course.Id</span>
+                            <span class="badge bg-info text-dark">@course.Credits кредитов</span>
+                        </div>
+                        <h5 class="card-title text-dark">@course.Name</h5>
+                        <p class="card-text text-muted small">@course.Description</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 d-flex justify-content-between align-items-center pb-3">
+                        <span class="small text-secondary">
+                            <strong>Преподаватель:</strong> @course.TeacherFullName
+                        </span>
+                        <a asp-page="/CourseDetails" asp-route-id="@course.Id" class="btn btn-outline-primary btn-sm">
+                            Подробнее (v2)
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!Model.Courses.Any() && string.IsNullOrEmpty(Model.ErrorAlert))
+    {
+        <div class="alert alert-info">Курсы в реестре отсутствуют.</div>
+    }
+</div>
